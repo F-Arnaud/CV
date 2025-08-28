@@ -29,6 +29,7 @@
             background-color: var(--gris-clair);
             color: var(--aubergine);
             overflow-x: hidden;
+            cursor: none; /* Cache le curseur par défaut */
         }
 
         .container {
@@ -378,6 +379,138 @@
             clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
         }
 
+        /* Bouton "Je t'embauche" */
+        .hire-me-btn {
+            position: fixed;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--grenadine) 0%, var(--ocre-dore) 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(234, 86, 90, 0.5);
+            cursor: pointer;
+            z-index: 9999;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            pointer-events: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .hire-me-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 15px 40px rgba(234, 86, 90, 0.7);
+        }
+
+        /* Effet de particules */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--sarcelle);
+            opacity: 0.3;
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Cursor personnalisé */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--bleu-tryba);
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s ease;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--sarcelle);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.3s ease;
+        }
+
+        /* Effet de texte dégradé animé */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--bleu-tryba), var(--sarcelle), var(--grenadine), var(--ocre-dore));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient-shift 5s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Effet de survol 3D avancé pour les cartes */
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .card-3d:hover {
+            transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animation de texte machine à écrire */
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid var(--bleu-tryba);
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--bleu-tryba) }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             h1 {
@@ -402,10 +535,34 @@
             .section {
                 padding: 25px;
             }
+
+            .hire-me-btn {
+                width: 120px;
+                height: 120px;
+                font-size: 1rem;
+            }
+
+            body {
+                cursor: auto; /* Rétablit le curseur par défaut sur mobile */
+            }
+            
+            .custom-cursor, .cursor-follower {
+                display: none; /* Cache les curseurs personnalisés sur mobile */
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Curseur personnalisé -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Effet de particules -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Bouton "Je t'embauche" -->
+    <div class="hire-me-btn" id="hireMeBtn">Je t'embauche !</div>
+
     <!-- Navigation circulaire -->
     <div class="nav-circle">
         <div class="nav-item" data-target="about"><i class="fas fa-user"></i></div>
@@ -420,19 +577,19 @@
             <div class="photo-container">
                 <img src="assets/moi.jpg" alt="Arnaud FOURCADE">
             </div>
-            <h1>Arnaud FOURCADE</h1>
-            <h2>Commercial & Entrepreneur</h2>
+            <h1 class="gradient-text">Arnaud FOURCADE</h1>
+            <h2 class="typewriter">Commercial & Entrepreneur</h2>
         </div>
     </header>
 
     <div class="container">
         <!-- Section À propos -->
-        <section id="about" class="section">
+        <section id="about" class="section card-3d">
             <h3>Profil Professionnel</h3>
             <p>Professionnel polyvalent, ayant évolué de technicien à chef de service puis entrepreneur. Mon parcours démontre une progression constante à travers les secteurs technique, commercial. Créateur d'entreprise, j'ai développé une expertise dans la gestion de projets complexes et le management d'équipes. Ma capacité d'adaptation et ma curiosité m'ont permis de réussir dans des contextes variés, du bâtiment au commerce. Animé par l'ambition et l'innovation, je mets aujourd'hui à profit cette polyvalence pour relever de nouveaux défis professionnels.</p>
             
             <div class="contact-info">
-                <div class="contact-card" data-type="phone">
+                <div class="contact-card card-3d" data-type="phone">
                     <i class="fas fa-phone"></i>
                     <p>Téléphone</p>
                     <div class="hidden-info">
@@ -441,7 +598,7 @@
                     </div>
                 </div>
                 
-                <div class="contact-card" data-type="email">
+                <div class="contact-card card-3d" data-type="email">
                     <i class="fas fa-envelope"></i>
                     <p>Email</p>
                     <div class="hidden-info">
@@ -450,7 +607,7 @@
                     </div>
                 </div>
                 
-                <div class="contact-card" data-type="whatsapp">
+                <div class="contact-card card-3d" data-type="whatsapp">
                     <i class="fab fa-whatsapp"></i>
                     <p>WhatsApp</p>
                     <div class="hidden-info">
@@ -458,7 +615,7 @@
                     </div>
                 </div>
                 
-                <div class="contact-card" data-type="address">
+                <div class="contact-card card-3d" data-type="address">
                     <i class="fas fa-map-marker-alt"></i>
                     <p>Adresse</p>
                     <div class="hidden-info">
@@ -468,7 +625,7 @@
             </div>
 
             <!-- QR Code WhatsApp -->
-            <div class="qr-container">
+            <div class="qr-container card-3d">
                 <h3>Me contacter sur WhatsApp</h3>
                 <p>Scannez ce code avec votre téléphone</p>
                 <div class="qr-code">
@@ -478,13 +635,13 @@
         </section>
 
         <!-- Section Expérience -->
-        <section id="experience" class="section">
+        <section id="experience" class="section card-3d">
             <h3>Expériences Professionnelles</h3>
             
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-date">2025</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content card-3d">
                         <h4>Commercial - Tryba</h4>
                         <p><i>04/2025 - Aujourd'hui</i></p>
                         <ul>
@@ -500,7 +657,7 @@
                 
                 <div class="timeline-item">
                     <div class="timeline-date">2025</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content card-3d">
                         <h4>Leader Manager - Burger King (CDD)</h4>
                         <p><i>02/2025 - 03/2025</i></p>
                         <ul>
@@ -515,7 +672,7 @@
                 
                 <div class="timeline-item">
                     <div class="timeline-date">2024</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content card-3d">
                         <h4>Manager (CDD) - Les Jardins du Mess, Hôtel 3 étoiles</h4>
                         <p><i>10/2023 - 06/2024</i></p>
                         <ul>
@@ -530,7 +687,7 @@
                 
                 <div class="timeline-item">
                     <div class="timeline-date">2024</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content card-3d">
                         <h4>Fondateur et Directeur de Magasin - La Fleur Tranquille</h4>
                         <p><i>03/2020 - 05/2024</i></p>
                         <ul>
@@ -546,7 +703,7 @@
                 
                 <div class="timeline-item">
                     <div class="timeline-date">2023</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content card-3d">
                         <h4>Microentrepreneur - OnePearl</h4>
                         <p><i>12/2022 - Aujourd'hui</i></p>
                         <ul>
@@ -560,7 +717,7 @@
                 
                 <div class="timeline-item">
                     <div class="timeline-date">2019</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content card-3d">
                         <h4>Responsable Technique - SEMISO, Saint-Ouen (93)</h4>
                         <p><i>06/2012 - 06/2019</i></p>
                         <ul>
@@ -575,7 +732,7 @@
                 
                 <div class="timeline-item">
                     <div class="timeline-date">2012</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content card-3d">
                         <h4>Électricien / Multi Technicien - Diverses entreprises du bâtiment</h4>
                         <p><i>2005 - 2012</i></p>
                         <ul>
@@ -591,14 +748,12 @@
         </section>
 
         <!-- Section Formation -->
-        <section id="education" class="section">
+        <section id="education" class="section card-3d">
             <h3>Formation & Compétences</h3>
             
             <h4>Formation</h4>
             <ul>
-                <li>Technique commercial Certifié Qualiopi</li>
-                <li>Academie du luxe "Les perles fines"</li>
-                <li>BPJEPS activités du cirque</li>
+                <li>Diplôme de 1er secours PSC1 (expiré)</li>
                 <li>Habilitation électrique BR et B2V</li>
                 <li>BEP électrotechnique</li>
             </ul>
@@ -708,6 +863,158 @@
             el.style.transform = 'translateY(20px)';
             el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             observer.observe(el);
+        });
+
+        // Curseur personnalisé
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        // Effet de survol pour les éléments interactifs
+        const interactiveElements = document.querySelectorAll('a, button, .nav-item, .contact-card, .skill');
+        
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursorFollower.style.transform = 'scale(1.5)';
+                cursorFollower.style.borderWidth = '1px';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorFollower.style.transform = 'scale(1)';
+                cursorFollower.style.borderWidth = '2px';
+            });
+        });
+
+        // Bouton "Je t'embauche" qui colle à la souris
+const hireMeBtn = document.getElementById('hireMeBtn');
+let isHoveringHireBtn = false;
+let clickCount = 0;
+let isFollowingMouse = false;
+let originalPosition = { left: '100px', top: '200px' }; // Position par défaut en haut à gauche
+
+// Position initiale du bouton 
+hireMeBtn.style.left = originalPosition.left;
+hireMeBtn.style.top = originalPosition.top;
+hireMeBtn.style.transform = 'translate(0, 0)';
+hireMeBtn.style.pointerEvents = 'auto';
+
+hireMeBtn.addEventListener('mouseenter', () => {
+    isHoveringHireBtn = true;
+    isFollowingMouse = true;
+    hireMeBtn.style.transition = 'none'; // Pas de transition pour suivre instantanément
+});
+
+hireMeBtn.addEventListener('mouseleave', () => {
+    isHoveringHireBtn = false;
+    isFollowingMouse = false;
+    hireMeBtn.style.transition = 'all 0.3s ease';
+});
+
+hireMeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    clickCount++;
+    
+    if (clickCount === 1) {
+        // Premier clic
+        hireMeBtn.textContent = 'Non je rigole, je vais pas te forcer la main';
+        hireMeBtn.style.background = 'linear-gradient(135deg, var(--sarcelle) 0%, var(--bleu-tryba) 100%)';
+    } else if (clickCount === 2) {
+        // Deuxième clic
+        hireMeBtn.textContent = 'Par email ou téléphone ça me convient aussi.';
+        hireMeBtn.style.background = 'linear-gradient(135deg, var(--ocre-dore) 0%, var(--grenadine) 100%)';
+    } else if (clickCount === 3) {
+        // Au 3ème clic, revenir à la position originale
+        isFollowingMouse = false;
+        hireMeBtn.style.transition = 'all 0.8s ease';
+        hireMeBtn.style.left = originalPosition.left;
+        hireMeBtn.style.top = originalPosition.top;
+        hireMeBtn.style.transform = 'translate(-50%, -50%)';
+        
+        // Remettre le texte et style original
+        hireMeBtn.textContent = 'Je t\'embauche !';
+        hireMeBtn.style.background = 'linear-gradient(135deg, var(--grenadine) 0%, var(--ocre-dore) 100%)';
+        
+        // Réinitialiser le compteur après un délai
+        setTimeout(() => {
+            clickCount = 0;
+        }, 1000);
+        
+        // Action de contact
+        document.querySelector('.contact-card[data-type="phone"]').classList.add('active');
+        document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Effet visuel pour tous les clics
+    if (clickCount <= 3) {
+        hireMeBtn.style.transform = 'translate(-50%, -50%) scale(1.1)';
+        setTimeout(() => {
+            if (clickCount < 3) {
+                hireMeBtn.style.transform = 'translate(-50%, -50%) scale(1)';
+            }
+        }, 200);
+    }
+});
+
+// Faire suivre le bouton à la souris quand il est en mode "collant"
+document.addEventListener('mousemove', (e) => {
+    if (isFollowingMouse) {
+        // Le bouton colle exactement à la position de la souris
+        hireMeBtn.style.left = e.clientX + 'px';
+        hireMeBtn.style.top = e.clientY + 'px';
+        hireMeBtn.style.transform = 'translate(-50%, -50%)';
+    }
+});
+
+        // Création des particules d'arrière-plan
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Propriétés aléatoires pour chaque particule
+            const size = Math.random() * 10 + 5;
+            const posX = Math.random() * 100;
+            const posY = Math.random() * 100;
+            const delay = Math.random() * 15;
+            const duration = Math.random() * 10 + 15;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}vw`;
+            particle.style.top = `${posY}vh`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            
+            // Changer la couleur aléatoirement parmi les couleurs de la charte
+            const colors = [
+                'var(--bleu-tryba)', 
+                'var(--sarcelle)', 
+                'var(--grenadine)', 
+                'var(--ocre-dore)'
+            ];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            particlesContainer.appendChild(particle);
+        }
+
+        // Effet de parallaxe sur le header
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+            header.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
         });
     </script>
 </body>
